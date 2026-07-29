@@ -13,20 +13,67 @@
 .tab{border:0;padding:12px;border-radius:11px;background:transparent;font-weight:800;color:#526071}.tab.active{background:#fff;color:var(--pd);box-shadow:0 3px 12px #0001}
 .panel{display:none}.panel.active{display:block}.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:16px;margin-top:13px;box-shadow:0 8px 24px #0f172a0d}
 h2,h3{margin:0 0 6px}.help{margin:0 0 14px;color:var(--muted);font-size:13px;line-height:1.45}.grid{display:grid;gap:10px}.two{grid-template-columns:1fr 1fr}
-.field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:750;color:#344054}input,select{width:100%;min-height:44px;padding:10px 11px;border:1px solid #cbd5e1;border-radius:11px;background:#fff;font:inherit}
-input:focus,select:focus{outline:3px solid #bfdbfe;border-color:#60a5fa}.money{position:relative}.money span{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-weight:700;color:#667085}.money input{padding-left:40px}
-.row{display:grid;grid-template-columns:1fr 150px auto;gap:9px;align-items:end;margin-bottom:9px}.btn{border:0;border-radius:11px;padding:10px 13px;min-height:42px;font-weight:800}.primary{background:var(--p);color:white}.secondary{background:#edf2f7;color:#344054}.danger{background:#fee2e2;color:var(--bad)}.outline{background:white;border:1px solid var(--line)}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}.actions .btn{flex:1 1 145px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{padding:14px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:14px}.metric small{display:block;color:#526071}.metric strong{display:block;font-size:25px;color:var(--pd);margin-top:4px}
+.field{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:800;color:#344054}
+input,select{width:100%;min-height:46px;padding:10px 12px;border:1px solid #cbd5e1;border-radius:11px;background:#fff;font:inherit}
+input:focus,select:focus{outline:3px solid #bfdbfe;border-color:#60a5fa}
+.name-field input,.name-input{
+  background:#f8fafc;
+  border:1px solid #94a3b8;
+  color:#1e293b;
+  font-weight:700;
+}
+.name-field input[readonly]{
+  background:#eef2f7;
+  color:#334155;
+}
+.amount-field{
+  padding:9px;
+  border-radius:13px;
+  background:#eff6ff;
+  border:1px solid #bfdbfe;
+}
+.amount-field>span.label-hint{
+  display:block;
+  margin-bottom:6px;
+  color:#1d4ed8;
+  font-size:12px;
+  font-weight:900;
+  text-transform:uppercase;
+  letter-spacing:.04em;
+}
+.money{position:relative}
+.money span{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-weight:900;color:#1d4ed8}
+.money input{
+  padding-left:40px;
+  background:white;
+  border:2px solid #60a5fa;
+  color:#0f172a;
+  font-weight:900;
+  text-align:right;
+}
+.money input:focus{border-color:#2563eb}
+.row{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(150px,.55fr) auto;
+  gap:10px;
+  align-items:end;
+  margin-bottom:11px;
+  padding:11px;
+  border:1px solid #e2e8f0;
+  border-radius:14px;
+  background:#fff;
+}.btn{border:0;border-radius:11px;padding:10px 13px;min-height:42px;font-weight:800}.primary{background:var(--p);color:white}.secondary{background:#edf2f7;color:#344054}.danger{background:#fee2e2;color:var(--bad)}.outline{background:white;border:1px solid var(--line)}.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:13px}.actions .btn{flex:1 1 145px}.metrics{display:grid;grid-template-columns:1fr 1fr;gap:10px}.metric{padding:14px;border:1px solid #bfdbfe;background:#eff6ff;border-radius:14px}.metric small{display:block;color:#526071}.metric strong{display:block;font-size:25px;color:var(--pd);margin-top:4px}
 .chips{display:flex;flex-wrap:wrap;gap:8px}.chip{border:1px solid #cbd5e1;border-radius:999px;background:#fff;padding:9px 14px;font-weight:800;color:#475467}.chip.active{background:var(--p);border-color:var(--p);color:#fff}
 .bill{border:1px solid var(--line);border-radius:16px;padding:14px;margin-top:12px}.bill-head{display:flex;gap:9px;align-items:center}.bill-name{font-size:18px;font-weight:800}.person{border-top:1px solid var(--line);padding-top:12px;margin-top:12px}.item-row{display:grid;grid-template-columns:1fr 130px auto;gap:8px;margin-bottom:8px}.result{margin-top:13px;padding:13px;border-radius:13px;background:#f8fafc;border:1px solid var(--line)}
 .line{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}.line:last-child{border-bottom:0}.warning{margin-top:9px;padding:9px;border-radius:10px;background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-size:12px}
 
-@media(max-width:640px){.two,.metrics{grid-template-columns:1fr}.row,.item-row{grid-template-columns:1fr}.row .btn,.item-row .btn{width:100%}.bill-head{align-items:flex-start;flex-direction:column}.bill-head .btn{width:100%}}
+@media(max-width:640px){.two,.metrics{grid-template-columns:1fr}.row,.item-row{grid-template-columns:1fr}.row .btn,.item-row .btn{width:100%}.bill-head{align-items:stretch;flex-direction:column}.bill-head .btn{width:100%}.amount-field{padding:10px}.money input{text-align:left}}
 @media print{@page{size:A4;margin:13mm}body{background:#fff}.hero,.tabs,.no-print{display:none!important}.app{padding:0}.panel{display:none!important}.panel.printing{display:block!important}.card,.bill{box-shadow:none;break-inside:avoid}input,select{border:0;padding:0;min-height:auto}.chip:not(.active){display:none}}
 </style>
 </head>
 <body>
 <main class="app">
-<section class="hero"><h1>Family Split Calculator</h1><p>Simple household and meal bill splitting.</p></section>
+<section class="hero"><h1>Family Split Calculator</h1><p>Simple household and meal bill splitting — no login or database required.</p></section>
 
 <nav class="tabs no-print">
 <button class="tab active" data-tab="shared">Shared Expenses</button>
@@ -77,22 +124,25 @@ const defaults=[['Electricity',0],['Water',0],['Unifi',139],['Cat Expenses',150]
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
 
 function moneyField(cls,val=0){return `<div class="money"><span>RM</span><input class="${cls}" type="number" min="0" step=".01" value="${Number(val).toFixed(2)}" inputmode="decimal"></div>`}
-function initShared(){$('fixedExpenses').innerHTML=defaults.map(([name,val])=>`<div class="row"><label class="field">Expense<input value="${name}" readonly></label><label class="field">Amount${moneyField('fixedAmount',val)}</label><span></span></div>`).join('');document.querySelectorAll('.fixedAmount').forEach(x=>x.oninput=calcShared);calcShared()}
-function addOther(){let d=document.createElement('div');d.className='row';d.innerHTML=`<label class="field">Expense Name<input class="otherName" placeholder="Example: Repair"></label><label class="field">Amount${moneyField('otherAmount')}</label><button class="btn danger no-print">Remove</button>`;d.querySelectorAll('input').forEach(x=>x.oninput=calcShared);d.querySelector('button').onclick=()=>{d.remove();calcShared()};$('otherExpenses').appendChild(d)}
+function initShared(){$('fixedExpenses').innerHTML=defaults.map(([name,val])=>`<div class="row"><label class="field name-field">Expense Name<input value="${name}" readonly></label><div class="amount-field"><span class="label-hint">Amount</span>${moneyField('fixedAmount',val)}</div><span></span></div>`).join('');document.querySelectorAll('.fixedAmount').forEach(x=>x.oninput=calcShared);calcShared()}
+function addOther(){let d=document.createElement('div');d.className='row';d.innerHTML=`<label class="field name-field">Expense Name<input class="otherName" placeholder="Example: Repair"></label><div class="amount-field"><span class="label-hint">Amount</span>${moneyField('otherAmount')}</div><button class="btn danger no-print">Remove</button>`;d.querySelectorAll('input').forEach(x=>x.oninput=calcShared);d.querySelector('button').onclick=()=>{d.remove();calcShared()};$('otherExpenses').appendChild(d)}
 function sharedData(){let a=[...document.querySelectorAll('#fixedExpenses .row')].map(r=>({name:r.querySelector('input[readonly]').value,amount:n(r.querySelector('.fixedAmount').value)}));let o=[...document.querySelectorAll('#otherExpenses .row')].map(r=>({name:r.querySelector('.otherName').value||'Other',amount:n(r.querySelector('.otherAmount').value)}));return [...a,...o]}
 function calcShared(){let count=Math.max(1,parseInt($('peopleCount').value)||1),total=sharedData().reduce((s,x)=>s+x.amount,0);$('sharedTotal').textContent=money(total);$('eachTotal').textContent=money(total/count);$('eachLabel').textContent=`Each Person Pays (${count} people)`}
 $('peopleCount').oninput=calcShared;$('addOther').onclick=addOther;
 
 function renderChips(){$('chips').innerHTML=people.map(p=>`<button class="chip ${selected.has(p)?'active':''}" data-p="${p}">${p}</button>`).join('');document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{if(selected.has(c.dataset.p)){if(selected.size>1)selected.delete(c.dataset.p)}else selected.add(c.dataset.p);renderChips()})}
 
-function addItem(section){let r=document.createElement('div');r.className='item-row';r.innerHTML=`<input class="itemName" placeholder="Item name (optional)">${moneyField('itemAmount')}<button class="btn danger no-print">Remove</button>`;r.querySelector('.itemAmount').oninput=()=>calcBill(section.closest('.bill'));r.querySelector('button').onclick=()=>{r.remove();calcBill(section.closest('.bill'))};section.querySelector('.items').appendChild(r)}
+function addItem(section){let r=document.createElement('div');r.className='item-row';r.innerHTML=`<label class="field name-field">Item Name<input class="itemName" placeholder="Example: Nasi Goreng"></label><div class="amount-field"><span class="label-hint">Item Amount</span>${moneyField('itemAmount')}</div><button class="btn danger no-print">Remove</button>`;r.querySelector('.itemAmount').oninput=()=>calcBill(section.closest('.bill'));r.querySelector('button').onclick=()=>{r.remove();calcBill(section.closest('.bill'))};section.querySelector('.items').appendChild(r)}
 function updateBillButton(){let count=document.querySelectorAll('.bill').length;$('addBill').textContent=count?'+ Add Another Bill':'+ Add Bill';let empty=$('emptyBills');if(empty)empty.style.display=count?'none':'block'}
-function addBill(name='New Bill'){billNo++;let ps=[...selected],card=document.createElement('div');card.className='card bill';card.dataset.people=JSON.stringify(ps);card.innerHTML=`<div class="bill-head"><input class="bill-name" value="${name}"><button class="btn danger no-print removeBill">Remove Bill</button></div>
+function addBill(name='New Bill'){billNo++;let ps=[...selected],card=document.createElement('div');card.className='card bill';card.dataset.people=JSON.stringify(ps);card.innerHTML=`<div class="bill-head"><label class="field name-field" style="flex:1">Bill / Restaurant Name<input class="bill-name name-input" value="${name}" placeholder="Example: Thong Bowl"></label><button class="btn danger no-print removeBill">Remove Bill</button></div>
 <h3 style="margin-top:15px">Bill Details</h3><div class="grid two">
-<label class="field">Subtotal${moneyField('subtotal')}</label><label class="field">Service Charge${moneyField('service')}</label><label class="field">Tax${moneyField('tax')}</label><label class="field">Discount${moneyField('discount')}</label></div>
+<div class="amount-field"><span class="label-hint">Subtotal</span>${moneyField('subtotal')}</div>
+<div class="amount-field"><span class="label-hint">Service Charge</span>${moneyField('service')}</div>
+<div class="amount-field"><span class="label-hint">Tax</span>${moneyField('tax')}</div>
+<div class="amount-field"><span class="label-hint">Discount</span>${moneyField('discount')}</div></div>
 <div class="warning">Charges and discounts are distributed proportionally based on each person's ordered item total. If no items are entered, the bill is divided equally.</div>
 <h3 style="margin-top:15px">Ordered Items</h3><div class="orders"></div>
-<h3 style="margin-top:15px">Payment</h3><div class="grid two"><label class="field">Paid By<select class="payer">${ps.map(p=>`<option>${p}</option>`).join('')}</select></label><label class="field">Amount Paid${moneyField('paid')}</label></div>
+<h3 style="margin-top:15px">Payment</h3><div class="grid two"><label class="field name-field">Paid By<select class="payer">${ps.map(p=>`<option>${p}</option>`).join('')}</select></label><div class="amount-field"><span class="label-hint">Amount Paid</span>${moneyField('paid')}</div></div>
 <div class="actions no-print"><button class="btn primary calculate">Calculate</button><button class="btn secondary share">Share This Bill</button></div><div class="result"></div>`;
 $('billList').appendChild(card);
 ps.forEach(p=>{let s=document.createElement('div');s.className='person';s.dataset.person=p;s.innerHTML=`<h3>${p}</h3><div class="items"></div><button class="btn secondary no-print addItem">+ Add Item</button>`;card.querySelector('.orders').appendChild(s);addItem(s);s.querySelector('.addItem').onclick=()=>addItem(s)});
