@@ -88,14 +88,21 @@ input:focus,select:focus{outline:3px solid #bfdbfe;border-color:#60a5fa}
 
 <div class="card">
 <h2>Monthly Shared Expenses</h2>
+<p class="help">Give this expense list a title so it is easy to identify when shared or saved as PDF.</p>
+<label class="field name-field" style="margin-bottom:16px">Expense Title
+<input id="sharedExpenseTitle" type="text" placeholder="Example: July 2026 Household Expenses" autocomplete="off">
+</label>
 <div id="fixedExpenses"></div>
 <h3 style="margin-top:16px">Other Expenses</h3>
 <div id="otherExpenses"></div>
-<button id="addOther" class="btn secondary no-print">+ Add Another Expense</button>
+<div class="actions no-print">
+<button id="addOther" class="btn secondary">+ Add Another Expense</button>
+<button id="clearShared" class="btn danger">Clear All Shared Expenses</button>
+</div>
 </div>
 
 <div class="card">
-<h2>Shared Expense Summary</h2>
+<h2 id="sharedSummaryTitle">Shared Expense Summary</h2>
 <div class="metrics"><div class="metric"><small>Total Shared Expenses</small><strong id="sharedTotal">RM0.00</strong></div>
 <div class="metric"><small id="eachLabel">Each Person Pays</small><strong id="eachTotal">RM0.00</strong></div></div>
 <div class="actions no-print">
@@ -109,7 +116,7 @@ input:focus,select:focus{outline:3px solid #bfdbfe;border-color:#60a5fa}
 <section id="bills" class="panel">
 <div class="card"><h2>Family Members</h2><p class="help">Select the people included when adding a new bill.</p><div id="chips" class="chips"></div></div>
 <div id="billList"><div id="emptyBills" class="card"><h2>No Bills Added Yet</h2><p class="help">Tap <strong>Add Bill</strong> to create your first restaurant, shopping, or family bill.</p></div></div>
-<div class="actions no-print"><button class="btn primary" id="addBill">+ Add Bill</button></div>
+<div class="actions no-print"><button class="btn primary" id="addBill">+ Add Bill</button><button class="btn danger" id="clearAllBills">Clear All Bills</button></div>
 <div class="card"><h2>Overall Family Summary</h2><div id="overall"><p>No bills yet.</p></div>
 <div class="actions no-print"><button class="btn primary" onclick="shareAllBills()">Share Summary</button><button class="btn outline" onclick="printPanel('bills')">Save as PDF</button></div></div>
 </section>
@@ -124,11 +131,13 @@ const defaults=[['Electricity',0],['Water',0],['Unifi',139],['Cat Expenses',150]
 document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active')});
 
 function moneyField(cls,val=0){return `<div class="money"><span>RM</span><input class="${cls}" type="number" min="0" step=".01" value="${Number(val).toFixed(2)}" inputmode="decimal"></div>`}
-function initShared(){$('fixedExpenses').innerHTML=defaults.map(([name,val])=>`<div class="row"><label class="field name-field">Expense Name<input value="${name}" readonly></label><div class="amount-field"><span class="label-hint">Amount</span>${moneyField('fixedAmount',val)}</div><span></span></div>`).join('');document.querySelectorAll('.fixedAmount').forEach(x=>x.oninput=calcShared);calcShared()}
-function addOther(){let d=document.createElement('div');d.className='row';d.innerHTML=`<label class="field name-field">Expense Name<input class="otherName" placeholder="Example: Repair"></label><div class="amount-field"><span class="label-hint">Amount</span>${moneyField('otherAmount')}</div><button class="btn danger no-print">Remove</button>`;d.querySelectorAll('input').forEach(x=>x.oninput=calcShared);d.querySelector('button').onclick=()=>{d.remove();calcShared()};$('otherExpenses').appendChild(d)}
+function initShared(){$('fixedExpenses').innerHTML=defaults.map(([name,val])=>`<div class="row"><label class="field name-field">Expense Name<input value="${name}" readonly></label><div class="amount-field"><span class="label-hint">Amount</span>${moneyField('fixedAmount',val)}</div><button type="button" class="btn outline no-print clearExpense">Clear</button></div>`).join('');document.querySelectorAll('.fixedAmount').forEach(x=>x.oninput=calcShared);document.querySelectorAll('#fixedExpenses .clearExpense').forEach(b=>b.onclick=()=>{b.closest('.row').querySelector('.fixedAmount').value='0.00';calcShared()});calcShared()}
+function addOther(){let d=document.createElement('div');d.className='row';d.innerHTML=`<label class="field name-field">Expense Name<input class="otherName" placeholder="Example: Repair"></label><div class="amount-field"><span class="label-hint">Amount</span>${moneyField('otherAmount')}</div><div class="grid"><button type="button" class="btn outline no-print clearOther">Clear</button><button type="button" class="btn danger no-print removeOther">Remove</button></div>`;d.querySelectorAll('input').forEach(x=>x.oninput=calcShared);d.querySelector('.clearOther').onclick=()=>{d.querySelector('.otherName').value='';d.querySelector('.otherAmount').value='0.00';calcShared()};d.querySelector('.removeOther').onclick=()=>{d.remove();calcShared()};$('otherExpenses').appendChild(d)}
 function sharedData(){let a=[...document.querySelectorAll('#fixedExpenses .row')].map(r=>({name:r.querySelector('input[readonly]').value,amount:n(r.querySelector('.fixedAmount').value)}));let o=[...document.querySelectorAll('#otherExpenses .row')].map(r=>({name:r.querySelector('.otherName').value||'Other',amount:n(r.querySelector('.otherAmount').value)}));return [...a,...o]}
-function calcShared(){let count=Math.max(1,parseInt($('peopleCount').value)||1),total=sharedData().reduce((s,x)=>s+x.amount,0);$('sharedTotal').textContent=money(total);$('eachTotal').textContent=money(total/count);$('eachLabel').textContent=`Each Person Pays (${count} people)`}
+function calcShared(){let count=Math.max(1,parseInt($('peopleCount').value)||1),total=sharedData().reduce((s,x)=>s+x.amount,0),title=$('sharedExpenseTitle').value.trim();$('sharedTotal').textContent=money(total);$('eachTotal').textContent=money(total/count);$('eachLabel').textContent=`Each Person Pays (${count} people)`;$('sharedSummaryTitle').textContent=title||'Shared Expense Summary'}
 $('peopleCount').oninput=calcShared;$('addOther').onclick=addOther;
+function clearAllShared(){if(!confirm('Clear all shared expense amounts and remove all custom expenses?'))return;document.querySelectorAll('#fixedExpenses .fixedAmount').forEach(x=>x.value='0.00');$('otherExpenses').innerHTML='';calcShared()}
+$('clearShared').onclick=clearAllShared;
 
 function renderChips(){$('chips').innerHTML=people.map(p=>`<button class="chip ${selected.has(p)?'active':''}" data-p="${p}">${p}</button>`).join('');document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>{if(selected.has(c.dataset.p)){if(selected.size>1)selected.delete(c.dataset.p)}else selected.add(c.dataset.p);renderChips()})}
 
@@ -144,10 +153,25 @@ function addBill(name='New Bill'){billNo++;let ps=[...selected],card=document.cr
 <h3 style="margin-top:15px">Ordered Items</h3><div class="orders"></div>
 <h3 style="margin-top:15px">Who Paid?</h3><p class="help">Select one or more people who paid the bill. When several people are selected, the bill payment is assumed to be shared equally between them.</p><div class="chips payer-options">${ps.map((p,i)=>`<button type="button" class="chip payer-chip ${i===0?'active':''}" data-payer="${p}">${p}</button>`).join('')}</div>
 <div class="routing"><strong>Who should each person repay?</strong><p class="help">Each person who did not pay can choose which selected payer should receive their payment.</p><div class="routing-list"></div></div>
-<div class="actions no-print"><button class="btn primary calculate">Calculate</button><button class="btn secondary share">Share This Bill</button></div><div class="result"></div>`;
+<div class="actions no-print"><button class="btn primary calculate">Calculate</button><button class="btn secondary share">Share This Bill</button><button class="btn outline clearBill">Clear This Bill</button></div><div class="result"></div>`;
 $('billList').appendChild(card);
 ps.forEach(p=>{let s=document.createElement('div');s.className='person';s.dataset.person=p;s.innerHTML=`<h3>${p}</h3><div class="items"></div><button class="btn secondary no-print addItem">+ Add Item</button>`;card.querySelector('.orders').appendChild(s);addItem(s);s.querySelector('.addItem').onclick=()=>addItem(s)});
-card.querySelectorAll('.subtotal,.service,.tax,.discount').forEach(x=>x.oninput=()=>calcBill(card));card.querySelectorAll('.payer-chip').forEach(chip=>chip.onclick=()=>{let active=card.querySelectorAll('.payer-chip.active');if(chip.classList.contains('active')){if(active.length>1)chip.classList.remove('active')}else chip.classList.add('active');renderRouting(card);calcBill(card)});card.querySelector('.calculate').onclick=()=>calcBill(card);card.querySelector('.share').onclick=()=>shareBill(card);card.querySelector('.removeBill').onclick=()=>{card.remove();calcOverall();updateBillButton()};renderRouting(card);calcBill(card);updateBillButton()}
+card.querySelectorAll('.subtotal,.service,.tax,.discount').forEach(x=>x.oninput=()=>calcBill(card));card.querySelectorAll('.payer-chip').forEach(chip=>chip.onclick=()=>{let active=card.querySelectorAll('.payer-chip.active');if(chip.classList.contains('active')){if(active.length>1)chip.classList.remove('active')}else chip.classList.add('active');renderRouting(card);calcBill(card)});card.querySelector('.calculate').onclick=()=>calcBill(card);card.querySelector('.share').onclick=()=>shareBill(card);card.querySelector('.clearBill').onclick=()=>clearBill(card);card.querySelector('.removeBill').onclick=()=>{if(confirm('Remove this bill completely?')){card.remove();calcOverall();updateBillButton()}};renderRouting(card);calcBill(card);updateBillButton()}
+
+function clearBill(card){
+ if(!confirm('Clear all information in this bill? The bill card will remain.'))return;
+ card.querySelector('.bill-name').value=`Bill ${[...document.querySelectorAll('.bill')].indexOf(card)+1}`;
+ card.querySelectorAll('.subtotal,.service,.tax,.discount').forEach(x=>x.value='0.00');
+ card.querySelectorAll('.person').forEach(section=>{section.querySelector('.items').innerHTML='';addItem(section)});
+ card.querySelectorAll('.payer-chip').forEach((chip,i)=>chip.classList.toggle('active',i===0));
+ renderRouting(card);calcBill(card);
+}
+function clearAllBills(){
+ let bills=[...document.querySelectorAll('.bill')];
+ if(!bills.length)return;
+ if(!confirm('Clear all bills? This will remove every bill from the Bills & Meals tab.'))return;
+ bills.forEach(b=>b.remove());billNo=0;calcOverall();updateBillButton();
+}
 function selectedPayers(card){return [...card.querySelectorAll('.payer-chip.active')].map(x=>x.dataset.payer)}
 function renderRouting(card){let ps=JSON.parse(card.dataset.people),payers=selectedPayers(card),list=card.querySelector('.routing-list'),previous={};list.querySelectorAll('.repay-select').forEach(s=>previous[s.dataset.person]=s.value);let debtors=ps.filter(p=>!payers.includes(p));list.innerHTML=debtors.length?debtors.map((p,i)=>`<div class="routing-row"><strong>${p} pays</strong><select class="repay-select" data-person="${p}">${payers.map(pay=>`<option ${previous[p]===pay?'selected':''}>${pay}</option>`).join('')}</select></div>`).join(''):'<p class="help">Everyone included in this bill is marked as a payer, so no repayment destination is needed.</p>';list.querySelectorAll('.repay-select').forEach(s=>s.onchange=()=>calcBill(card))}
 function billData(card){let ps=JSON.parse(card.dataset.people),subtotal=n(card.querySelector('.subtotal').value),service=n(card.querySelector('.service').value),tax=n(card.querySelector('.tax').value),discount=n(card.querySelector('.discount').value),total=Math.max(0,subtotal+service+tax-discount),payers=selectedPayers(card),items={},itemTotal=0;card.querySelectorAll('.person').forEach(s=>{let t=[...s.querySelectorAll('.itemAmount')].reduce((a,x)=>a+n(x.value),0);items[s.dataset.person]=t;itemTotal+=t});let shares={};ps.forEach(p=>shares[p]=itemTotal?total*(items[p]/itemTotal):total/ps.length);let routes={};card.querySelectorAll('.repay-select').forEach(s=>routes[s.dataset.person]=s.value);let paidShares={};payers.forEach(p=>paidShares[p]=total/Math.max(1,payers.length));return {name:card.querySelector('.bill-name').value||'Bill',people:ps,subtotal,service,tax,discount,total,payers,items,shares,routes,paidShares}}
@@ -155,14 +179,14 @@ function calcBill(card){let d=billData(card);let settlements=d.people.filter(p=>
 
 function calcOverall(){let t={};people.forEach(p=>t[p]={owes:0,paid:0});document.querySelectorAll('.bill').forEach(c=>{let d=billData(c);d.people.forEach(p=>t[p].owes+=d.shares[p]);d.payers.forEach(p=>t[p].paid+=(d.paidShares[p]||0))});let active=Object.entries(t).filter(([,v])=>v.owes||v.paid);$('overall').innerHTML=active.length?active.map(([p,v])=>{let b=v.paid-v.owes,s=Math.abs(b)<.01?'Settled':b>0?`Receives ${money(b)}`:`Pays ${money(-b)}`;return `<div class="line"><span><strong>${p}</strong><br><small>Share ${money(v.owes)} · Paid ${money(v.paid)}</small></span><strong>${s}</strong></div>`}).join(''):'<p>No bills yet.</p>'}
 
-function textShared(){let count=Math.max(1,parseInt($('peopleCount').value)||1),a=sharedData(),total=a.reduce((s,x)=>s+x.amount,0);return ['Family Shared Expenses','',...a.filter(x=>x.amount).map(x=>`${x.name}: ${money(x.amount)}`),'',`Total: ${money(total)}`,`Each person (${count}): ${money(total/count)}`].join('\n')}
+function textShared(){let count=Math.max(1,parseInt($('peopleCount').value)||1),a=sharedData(),total=a.reduce((s,x)=>s+x.amount,0),title=$('sharedExpenseTitle').value.trim()||'Family Shared Expenses';return [title,`Members: ${count}`,'',...a.filter(x=>x.amount).map(x=>`${x.name}: ${money(x.amount)}`),'',`Total: ${money(total)}`,`Each person: ${money(total/count)}`].join('\n')}
 function textBill(c){let d=calcBill(c);return [d.name,`Subtotal: ${money(d.subtotal)}`,`Service: ${money(d.service)}`,`Tax: ${money(d.tax)}`,`Discount: ${money(d.discount)}`,`Final: ${money(d.total)}`,'',...d.people.map(p=>`${p}: ${money(d.shares[p])}`),'',`Paid by: ${d.payers.join(', ')}`,'',...d.settlements.map(x=>`${x.from} pays ${x.to}: ${money(x.amount)}`)].join('\n')}
 async function share(title,text){try{if(navigator.share)await navigator.share({title,text});else{await navigator.clipboard.writeText(text);alert('Copied to clipboard')}}catch(e){if(e.name!=='AbortError')alert('Unable to share')}}
-function shareShared(){share('Family Shared Expenses',textShared())}function shareBill(c){share(c.querySelector('.bill-name').value,textBill(c))}function shareAllBills(){share('Family Bills',[...document.querySelectorAll('.bill')].map(textBill).join('\n\n----------------\n\n'))}
+function shareShared(){let title=$('sharedExpenseTitle').value.trim()||'Family Shared Expenses';share(title,textShared())}function shareBill(c){share(c.querySelector('.bill-name').value,textBill(c))}function shareAllBills(){share('Family Bills',[...document.querySelectorAll('.bill')].map(textBill).join('\n\n----------------\n\n'))}
 function printPanel(id){document.querySelectorAll('.panel').forEach(p=>p.classList.remove('printing'));$(id).classList.add('printing');setTimeout(()=>window.print(),100)}
 
 
-$('addBill').onclick=()=>addBill(`Bill ${document.querySelectorAll('.bill').length+1}`);initShared();renderChips();updateBillButton();
+$('addBill').onclick=()=>addBill(`Bill ${document.querySelectorAll('.bill').length+1}`);$('clearAllBills').onclick=clearAllBills;$('sharedExpenseTitle').oninput=calcShared;initShared();renderChips();updateBillButton();
 </script>
 </body>
 </html>
